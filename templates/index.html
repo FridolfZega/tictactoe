@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tic Tac Toe Localhost</title>
+    <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+    <div class="app-shell">
+        <header>
+            <h1>Tic Tac Toe</h1>
+            <p class="subtitle">Mainkan di browser. Klik kotak untuk menandai lalu tekan tombol ulangi.</p>
+        </header>
+        <div id="status" class="status">Giliran: X</div>
+        <div class="board" id="board">
+            <div class="cell" data-cell="0"></div>
+            <div class="cell" data-cell="1"></div>
+            <div class="cell" data-cell="2"></div>
+            <div class="cell" data-cell="3"></div>
+            <div class="cell" data-cell="4"></div>
+            <div class="cell" data-cell="5"></div>
+            <div class="cell" data-cell="6"></div>
+            <div class="cell" data-cell="7"></div>
+            <div class="cell" data-cell="8"></div>
+        </div>
+        <button id="resetButton" class="reset-button">Ulangi Game</button>
+        <footer>Server: localhost:5000</footer>
+    </div>
+    <script>
+        const boardEl = document.getElementById('board');
+        const statusEl = document.getElementById('status');
+        const resetButton = document.getElementById('resetButton');
+        let board = Array(9).fill('');
+        let currentPlayer = 'X';
+        let gameOver = false;
+
+        async function updateStatus() {
+            if (gameOver) return;
+            statusEl.textContent = `Giliran: ${currentPlayer}`;
+        }
+
+        async function checkWinner() {
+            const response = await fetch('/api/check', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ board }),
+            });
+            const data = await response.json();
+            if (data.winner) {
+                gameOver = true;
+                statusEl.textContent = data.winner === 'Draw' ? 'Hasil: Seri' : `Pemenang: ${data.winner}`;
+                if (data.combo) {
+                    highlightWin(data.combo);
+                }
+            }
+        }
+
+        function highlightWin(combo) {
+            combo.forEach(index => {
+                const cell = boardEl.querySelector(`[data-cell='${index}']`);
+                if (cell) cell.classList.add('win');
+            });
+        }
+
+        function renderBoard() {
+            boardEl.querySelectorAll('.cell').forEach(cell => {
+                const index = Number(cell.dataset.cell);
+                cell.textContent = board[index];
+            });
+        }
+
+        boardEl.addEventListener('click', async event => {
+            if (gameOver) return;
+            const cell = event.target.closest('.cell');
+            if (!cell) return;
+            const index = Number(cell.dataset.cell);
+            if (board[index] !== '') return;
+            board[index] = currentPlayer;
+            renderBoard();
+            await checkWinner();
+            if (!gameOver) {
+                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                updateStatus();
+            }
+        });
+
+        resetButton.addEventListener('click', () => {
+            board = Array(9).fill('');
+            currentPlayer = 'X';
+            gameOver = false;
+            boardEl.querySelectorAll('.cell').forEach(cell => cell.classList.remove('win'));
+            renderBoard();
+            updateStatus();
+        });
+
+        updateStatus();
+    </script>
+</body>
+</html>
