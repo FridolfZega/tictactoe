@@ -1,0 +1,105 @@
+:root {
+    --bg: #111827;
+    --card: rgba(255, 255, 255, 0.08);
+    --text: #f8fafc;
+    --accent: #10b981;
+    --accent-soft: #22c55e;
+    --muted: #94a3b8;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Inter, system-ui, sans-serif;
+    background: radial-gradient(circle at top, #1f2937 0%, #0f172a 100%);
+    color: var(--text);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.app-shell {
+    width: min(520px, calc(100vw - 32px));
+    padding: 28px;
+    border-radius: 28px;
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.95), rgba(17, 24, 39, 0.98));
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+}
+
+header h1 {
+    margin: 0;
+    font-size: clamp(2.1rem, 3vw, 3rem);
+}
+
+.subtitle {
+    margin: 10px 0 24px;
+    color: var(--muted);
+}
+
+.status {
+    margin-bottom: 20px;
+    padding: 16px 18px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(148, 163, 184, 0.15);
+    font-weight: 600;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.cell {
+    aspect-ratio: 1 / 1;
+    display: grid;
+    place-items: center;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 2px solid rgba(148, 163, 184, 0.12);
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: var(--text);
+}
+
+.cell:hover {
+    transform: translateY(-2px);
+    border-color: rgba(59, 130, 246, 0.6);
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.cell.win {
+    background: rgba(16, 185, 129, 0.25);
+    border-color: rgba(16, 185, 129, 0.8);
+}
+
+.reset-button {
+    width: 100%;
+    border: none;
+    padding: 16px 18px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #22c55e, #14b8a6);
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.reset-button:hover {
+    transform: translateY(-1px);
+    opacity: 0.95;
+}
+
+footer {
+    margin-top: 18px;
+    color: var(--muted);
+    text-align: center;
+    font-size: 0.95rem;
+}
